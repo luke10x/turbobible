@@ -220,7 +220,7 @@ TStatusLine *TBibleApp::initStatusLine( TRect r )
 
 TDeskTop *TBibleApp::initDeskTop( TRect r) {
     // r.a.y--;
-    // r.b.y--;
+    r.b.y--;
 
     // TRect r(0, 0, 26, 7);
     // r.move(53, 16);
