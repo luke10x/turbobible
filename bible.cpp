@@ -116,7 +116,22 @@ TInterior::TInterior(const TRect& bounds): TView(bounds)
 }
 
 void TInterior::draw() {
-    for (int i = 0; i < size.y; i++) writeStr(0, i, lines[i], 1);
+
+    ushort color = getColor(0x0301);
+    for (int i = 0; i < size.y; i++) {
+
+
+        TDrawBuffer b;
+        b.moveChar(0, ' ', color, size.x);
+        if (lines[i]) {
+            char s[maxLineLength_];
+            strncpy(s, lines[i], size.x);
+            s[size.x] = EOS;
+            b.moveStr(0, s, color);
+        }
+        writeLine(0, i, size.x, 1, b);
+        // writeStr(0, i, lines[i], 1);
+    }
     // const char *hstr = "Hello World!";
     // ushort color = getColor(0x0301);
     // TView::draw();
