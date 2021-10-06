@@ -68,6 +68,40 @@ __link( RMemo )
 
 static short winNumber = 0;
 
+
+const char *fileToRead = "bible.cpp";
+const int maxLineLength_ = maxViewWidth + 1;
+const int maxLines = 100;
+char *lines[maxLines];
+int lineCount = 0;
+
+void readFile(const char *fileName)
+{
+	FILE *fp = fopen(fileToRead, "r");
+
+    if (fp == NULL) {
+        perror("Failed: ");
+        exit(1);
+    }
+
+    char buffer[maxLineLength_+1];
+
+    int i = 0;
+    while (fgets(buffer, maxLineLength_ - 1, fp)) {
+        // Remove trailing newline
+        buffer[strcspn(buffer, "\r")] = 0;
+        buffer[strcspn(buffer, "\n")] = 0;
+
+        lines[i] = (char *) malloc(maxLineLength_ * sizeof(char *));
+        strcpy(lines[i], buffer);
+        i++;
+
+        if (i >= maxLines) {
+            break;
+        }
+    }
+    fclose(fp);    
+}
 class TInterior: public TView
 {
 public:
@@ -82,12 +116,13 @@ TInterior::TInterior(const TRect& bounds): TView(bounds)
 }
 
 void TInterior::draw() {
-    const char *hstr = "Hello World!";
-    ushort color = getColor(0x0301);
-    TView::draw();
-    TDrawBuffer b;
-    b.moveStr(0, hstr, color);
-    writeLine(4, 2, 12, 1, b);
+    for (int i = 0; i < size.y; i++) writeStr(0, i, lines[i], 1);
+    // const char *hstr = "Hello World!";
+    // ushort color = getColor(0x0301);
+    // TView::draw();
+    // TDrawBuffer b;
+    // b.moveStr(0, hstr, color);
+    // writeLine(4, 2, 12, 1, b);
 }
 
 class TDemoWindow: public TWindow
@@ -183,6 +218,8 @@ TDeskTop *TBibleApp::initDeskTop( TRect r) {
 
 int main()
 {
+    readFile(fileToRead);
+
     TBibleApp *bibleApp = new TBibleApp;
 
     bibleApp->run();
