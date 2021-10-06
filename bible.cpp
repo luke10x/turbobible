@@ -71,6 +71,8 @@ class TBibleApp : public TApplication
 {
 public:
     TBibleApp();
+    static TMenuBar *initMenuBar( TRect r);
+    static TDeskTop *initDeskTop( TRect r);
     static TStatusLine *initStatusLine( TRect r);
 };
 
@@ -83,6 +85,9 @@ TBibleApp::TBibleApp() :
 {
 }
 
+TMenuBar *TBibleApp::initMenuBar( TRect r) {
+    return NULL;
+}
 
 TStatusLine *TBibleApp::initStatusLine( TRect r )
 {
@@ -94,6 +99,13 @@ TStatusLine *TBibleApp::initStatusLine( TRect r )
         *new TStatusItem( "Howdy", kbF1, cmHelp )
         )
     );
+}
+
+TDeskTop *TBibleApp::initDeskTop( TRect r) {
+    // r.a.y--;
+    // r.b.y--;
+
+    return new TDeskTop(r);
 }
 
 int main()
