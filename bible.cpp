@@ -66,6 +66,19 @@ __link( RMemo )
 #include <stdlib.h>
 #endif // __STDLIB_H
 
+static short winNumber = 0;
+
+class TDemoWindow: public TWindow
+{
+public:
+    TDemoWindow( const TRect& r, const char *aTitle, short aNumber);
+};
+
+TDemoWindow::TDemoWindow( const TRect& r, const char *aTitle, short aNumber):
+            TWindow(r, aTitle, aNumber),
+            TWindowInit( &TDemoWindow::initFrame)
+{
+}
 
 class TBibleApp : public TApplication
 {
@@ -74,9 +87,38 @@ public:
     static TMenuBar *initMenuBar( TRect r);
     static TDeskTop *initDeskTop( TRect r);
     static TStatusLine *initStatusLine( TRect r);
+    void handleEvent( TEvent& event );
+    void myNewWindow();
 };
-
 // TBibleApp
+void TBibleApp::myNewWindow()
+{
+    TRect r(0, 0, 26, 7);
+    r.move(53, 16);
+    TDemoWindow *window = new TDemoWindow(
+        r, "Demo window", ++winNumber);
+    
+    deskTop->insert(window);
+}
+
+const int cmMyNewWin = 444;
+
+void TBibleApp::handleEvent( TEvent& event )
+{
+    TApplication::handleEvent(event);
+    if (event.what == evCommand) {
+        switch(event.message.command)
+        {
+            case cmMyNewWin:
+                myNewWindow();
+                break;
+            default:
+                return;
+        }
+        clearEvent(event);
+    }
+}
+
 TBibleApp::TBibleApp() :
     TProgInit(&TBibleApp::initStatusLine,
               &TBibleApp::initMenuBar,
@@ -94,7 +136,7 @@ TStatusLine *TBibleApp::initStatusLine( TRect r )
     r.a.y = r.b.y - 1;
         return (new TStatusLine( r,
       *new TStatusDef( 0, 50 ) +
-        *new TStatusItem( "~F1~ Help", kbF1, cmHelp ) +
+        *new TStatusItem( "~F1~ My Win", kbF1, cmMyNewWin ) +
         *new TStatusItem( "~Alt-X~ Exitas", kbAltX, cmQuit ) +
         *new TStatusItem( "Howdy", kbF1, cmHelp )
         )
@@ -105,6 +147,12 @@ TDeskTop *TBibleApp::initDeskTop( TRect r) {
     // r.a.y--;
     // r.b.y--;
 
+    // TRect r(0, 0, 26, 7);
+    // r.move(53, 16);
+    TDemoWindow *window = new TDemoWindow(
+        r, "Demo window", ++winNumber);
+
+    // return window;
     return new TDeskTop(r);
 }
 

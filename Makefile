@@ -2,7 +2,7 @@ clean:
 	rm -f bible
 
 indent:
-	indent -kr -ts4 -nut -l80 *.c
+	indent -kr -ts5 -nut -l80 *.cpp
 
 bible:
 	g++ -std=c++14 -o bible bible.cpp ../tvision/build/libtvision.a \
