@@ -68,16 +68,41 @@ __link( RMemo )
 
 static short winNumber = 0;
 
+class TInterior: public TView
+{
+public:
+    TInterior(const TRect& bounds);
+    virtual void draw();
+};
+
+TInterior::TInterior(const TRect& bounds): TView(bounds)
+{
+    growMode = gfGrowHiX | gfGrowHiY;
+    options = options | ofFramed;
+}
+
+void TInterior::draw() {
+    char *hstr = "Hello World!";
+    ushort color = getColor(0x0301);
+    TView::draw();
+    TDrawBuffer b;
+    b.moveStr(0, hstr, color);
+    writeLine(4, 2, 12, 1, b);
+}
+
 class TDemoWindow: public TWindow
 {
 public:
     TDemoWindow( const TRect& r, const char *aTitle, short aNumber);
 };
 
-TDemoWindow::TDemoWindow( const TRect& r, const char *aTitle, short aNumber):
-            TWindow(r, aTitle, aNumber),
+TDemoWindow::TDemoWindow( const TRect& bounds, const char *aTitle, short aNumber):
+            TWindow(bounds, aTitle, aNumber),
             TWindowInit( &TDemoWindow::initFrame)
 {
+    TRect r = getClipRect();
+    r.grow(-1, -1);
+    insert(new TInterior(r));
 }
 
 class TBibleApp : public TApplication
