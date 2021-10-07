@@ -1,29 +1,3 @@
-/*---------------------------------------------------------------------*/
-/*                                                                     */
-/*   Turbo Vision Forms Demo main source file.                         */
-/*                                                                     */
-/*---------------------------------------------------------------------*/
-/*                                                                     */
-/* This Turbo Vision application uses forms to enter and edit data     */
-/* in a collection. Two data files, PHONENUM.F16 and PARTS.F16, are    */
-/* provided and can be loaded using this application's File|Open menu. */
-/* (PHONENUM.F32 and PARTS.F32 are used for the 32 bit version of      */
-/*  TVFORMS)                                                           */
-/*                                                                     */
-/* The .F16 or .F32 files were created by GENFORMS.MAK, which compiles */
-/* and runs GENFORM.CPP. You can create additional data files by       */
-/* copying and modifying GENPARTS.H or GENPHONE.H and then             */
-/* incorporating your new header into GENFORM.CPP.                     */
-/*                                                                     */
-/*---------------------------------------------------------------------*/
-/*
- *      Turbo Vision - Version 2.0
- *
- *      Copyright (c) 1994 by Borland International
- *      All Rights Reserved.
- *
- */
-
 #define Uses_TKeys
 #define Uses_TApplication
 #define Uses_TEvent
@@ -66,8 +40,32 @@ __link( RMemo )
 #include <stdlib.h>
 #endif // __STDLIB_H
 
-static short winNumber = 0;
+class TBibleApp: public TApplication
+{
+public:
+    TBibleApp();
+    static TMenuBar *initMenuBar( TRect r);
+    static TDeskTop *initDeskTop( TRect r);
+    static TStatusLine *initStatusLine( TRect r);
+    void handleEvent( TEvent& event );
+    void myNewWindow();
+};
 
+class TDemoWindow: public TWindow
+{
+public:
+    TDemoWindow( const TRect& r, const char *aTitle, short aNumber);
+};
+
+class TInterior: public TView
+{
+public:
+    TInterior(const TRect& bounds);
+    virtual void draw();
+};
+
+const int cmMyNewWin = 444;
+static short winNumber = 0;
 
 const char *fileToRead = "bible.cpp";
 const int maxLineLength_ = maxViewWidth + 1;
@@ -102,13 +100,8 @@ void readFile(const char *fileName)
     }
     fclose(fp);    
 }
-class TInterior: public TView
-{
-public:
-    TInterior(const TRect& bounds);
-    virtual void draw();
-};
 
+// TInterior /////////////////////////////////////////
 TInterior::TInterior(const TRect& bounds): TView(bounds)
 {
     growMode = gfGrowHiX | gfGrowHiY;
@@ -140,11 +133,7 @@ void TInterior::draw() {
     // writeLine(4, 2, 12, 1, b);
 }
 
-class TDemoWindow: public TWindow
-{
-public:
-    TDemoWindow( const TRect& r, const char *aTitle, short aNumber);
-};
+// TDemoWindow ///////////////////////////////////////////////////////////////////
 
 TDemoWindow::TDemoWindow( const TRect& bounds, const char *aTitle, short aNumber):
             TWindow(bounds, aTitle, aNumber),
@@ -155,17 +144,7 @@ TDemoWindow::TDemoWindow( const TRect& bounds, const char *aTitle, short aNumber
     insert(new TInterior(r));
 }
 
-class TBibleApp : public TApplication
-{
-public:
-    TBibleApp();
-    static TMenuBar *initMenuBar( TRect r);
-    static TDeskTop *initDeskTop( TRect r);
-    static TStatusLine *initStatusLine( TRect r);
-    void handleEvent( TEvent& event );
-    void myNewWindow();
-};
-// TBibleApp
+// TBibleApp ////////////////////////////////////////////////////////////////////////////
 void TBibleApp::myNewWindow()
 {
     TRect r(0, 0, 26, 7);
@@ -175,8 +154,6 @@ void TBibleApp::myNewWindow()
     
     deskTop->insert(window);
 }
-
-const int cmMyNewWin = 444;
 
 void TBibleApp::handleEvent( TEvent& event )
 {
@@ -231,6 +208,7 @@ TDeskTop *TBibleApp::initDeskTop( TRect r) {
     return new TDeskTop(r);
 }
 
+// main ///////////////////////
 int main()
 {
     readFile(fileToRead);
