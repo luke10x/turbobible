@@ -63,6 +63,9 @@ class TDemoWindow : public TWindow
 public:
     TDemoWindow(const TRect &r, const char *aTitle, short aNumber);
     TInterior *makeInterior(const TRect &r, Boolean left);
+    void sizeLimits(TPoint &minP, TPoint &maxP);
+private:
+    TInterior *lInterior;
 };
 
 const int cmMyNewWin = 444;
@@ -210,7 +213,7 @@ TDemoWindow::TDemoWindow(const TRect &bounds,
     TRect extent = getExtent();
 
     TRect r(extent.a.x, extent.a.y, extent.b.x / 2 + 1, extent.b.y);
-    TInterior *lInterior = makeInterior(r, True);
+    lInterior = makeInterior(r, True);
     lInterior->growMode = gfGrowHiY;
     insert(lInterior);
 
@@ -218,6 +221,12 @@ TDemoWindow::TDemoWindow(const TRect &bounds,
     TInterior *rInterior = makeInterior(r, False);
     rInterior->growMode = gfGrowHiX | gfGrowHiY;
     insert(rInterior);
+}
+
+void TDemoWindow::sizeLimits(TPoint &minP, TPoint &maxP)
+{
+    TWindow::sizeLimits(minP, maxP);
+    minP.x = lInterior->size.x + 19;
 }
 
 // TInterior /////////////////////////////////////////
